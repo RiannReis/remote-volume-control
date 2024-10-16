@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">rvcw</string>
     <string name="choose_port">choose_port</string>
     <string name="running">Running...</string>
     <string name="web_remote_volume_control_enabled_disabled">Web Remote Volume Control is enabled. Connect to below address to start controlling sound volume remotely.</string>
