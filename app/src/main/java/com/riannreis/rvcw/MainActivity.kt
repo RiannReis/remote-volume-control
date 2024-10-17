@@ -9,7 +9,9 @@ import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var openDialogBtn: Button
+    private lateinit var openDialogPortBtn: Button
+    private lateinit var openDialogAuthBtn: Button
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,10 +23,16 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        openDialogBtn = findViewById(R.id.btn_dialog)
+        openDialogPortBtn = findViewById(R.id.btn_dialog_choose_port)
+        openDialogAuthBtn = findViewById(R.id.btn_dialog_basic_auth)
 
-        openDialogBtn.setOnClickListener {
+
+        openDialogPortBtn.setOnClickListener {
             InputPortDialogFragment().show(supportFragmentManager, "INPUT_PORT")
+        }
+
+        openDialogAuthBtn.setOnClickListener {
+            InputAuthKeyDialogFragment().show(supportFragmentManager, "INPUT_SECRET_KEY")
         }
 
 
