@@ -1,12 +1,16 @@
 package com.riannreis.rvcw
 
 import android.os.Bundle
+import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var openDialogBtn: Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -16,5 +20,14 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        openDialogBtn = findViewById(R.id.btn_dialog)
+
+        openDialogBtn.setOnClickListener {
+            InputPortDialogFragment().show(supportFragmentManager, "INPUT_PORT")
+        }
+
+
     }
+
 }
