@@ -1,11 +1,15 @@
 package com.riannreis.rvcw
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
@@ -18,8 +22,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var txtCloseDesc: TextView
     private lateinit var txtDesc: TextView
     private lateinit var webLink: TextView
+
     private var start: Boolean = false
     private var serverIpIsPrivate: Boolean = true
+
+    private val requestNotificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+        isgranted: Boolean ->
+        if (isgranted){
+
+        } else {
+
+        }
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +45,8 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        checkAndRequestNotificationPermission()
 
         openDialogPortBtn = findViewById(R.id.btn_dialog_choose_port)
         openDialogAuthBtn = findViewById(R.id.btn_dialog_basic_auth)
@@ -143,4 +159,23 @@ class MainActivity : AppCompatActivity() {
         btn2.visibility = View.GONE
     }
 
+    private fun checkAndRequestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Checks if permission has already been granted
+            when {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    // Permission has already been granted, no need to do anything
+                }
+                else -> {
+                    // Request user permission
+                    requestNotificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+        } else {
+            // In versions prior to Android 13, notification permissions are granted automatically
+        }
+    }
 }
