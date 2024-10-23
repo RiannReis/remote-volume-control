@@ -1,6 +1,7 @@
 package com.riannreis.rvcw
 
 import android.app.Dialog
+import android.content.Context
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -9,6 +10,22 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 
 class InputPortDialogFragment : DialogFragment() {
+
+    private lateinit var portDialogListener: PortDialogListener
+
+    interface PortDialogListener {
+        fun onPortEntered(port: Int)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try {
+            portDialogListener = context as PortDialogListener
+        } catch (e: ClassCastException) {
+            throw ClassCastException("$context should implement PortDialogListener")
+        }
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
 
@@ -37,6 +54,7 @@ class InputPortDialogFragment : DialogFragment() {
                     if (port in 1024..65535) {
                         Toast.makeText(requireContext(), "Valid port: $port", Toast.LENGTH_SHORT)
                             .show()
+                        portDialogListener.onPortEntered(port)
                         dismiss() // Closes dialog.
                     } else {
                         Toast.makeText(

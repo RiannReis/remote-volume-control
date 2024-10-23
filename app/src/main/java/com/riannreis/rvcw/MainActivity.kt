@@ -1,19 +1,27 @@
 package com.riannreis.rvcw
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.riannreis.rvcw.server.WebServer
+import com.riannreis.rvcw.server.WebServerService
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogListener {
 
     private lateinit var openDialogPortBtn: Button
     private lateinit var openDialogAuthBtn: Button
@@ -23,8 +31,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var txtDesc: TextView
     private lateinit var webLink: TextView
 
-    private var start: Boolean = false
     private var serverIpIsPrivate: Boolean = true
+    private var portValue: Int = 9090
+    private var isRunning: Boolean = false
+
+    private lateinit var webServer: WebServer
 
     private val requestNotificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
         isgranted: Boolean ->
@@ -59,9 +70,17 @@ class MainActivity : AppCompatActivity() {
         // Main Button (Enable / Disable)
 
         startOrEndRemoteControlBtn.setOnClickListener {
-            start = !start
+            if (isRunning){
+                stopRemoteControlService()
+            } else {
+                startRemoteControlService()
+            }
+
+            isRunning = !isRunning
             updateActivity()
 
+
+            Log.d("WebServer", "Server state toggled. Running: $isRunning")
         }
 
 
@@ -80,13 +99,55 @@ class MainActivity : AppCompatActivity() {
         closeBtn.setOnClickListener {
             finish()
         }
+
+    }
+
+    private val serverStateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val isRunning = intent?.getBooleanExtra("IS_RUNNING", false) ?: false
+            this@MainActivity.isRunning = isRunning
+            updateActivity()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                registerReceiver(serverStateReceiver, IntentFilter("SERVER_STATE_UPDATE"),
+                    RECEIVER_NOT_EXPORTED
+                )
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unregisterReceiver(serverStateReceiver)
+    }
+
+
+    private fun startRemoteControlService() {
+        val intent = Intent(this, WebServerService::class.java)
+        intent.putExtra("PORT_VALUE", portValue)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
+        updateActivity()
+
+    }
+
+    private fun stopRemoteControlService() {
+        stopService(Intent(this, WebServerService::class.java))
+        updateActivity()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
         // Saves the 'start' state (whether it is 'running' or not)
-        outState.putBoolean("isRunning", start)
 
         // Saves the link text (if visible)
         outState.putString("webLinkText", webLink.text.toString())
@@ -100,7 +161,6 @@ class MainActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
 
         // Restores the 'start' state
-        start = savedInstanceState.getBoolean("isRunning", false)
 
         // Restores the link if visible
         val webLinkText = savedInstanceState.getString("webLinkText")
@@ -119,12 +179,12 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun updateActivity() {
-        if (start) {
+        if (isRunning) {
             if (serverIpIsPrivate) {
                 startOrEndRemoteControlBtn.setText(R.string.running)
                 txtDesc.setText(R.string.web_remote_volume_control_enabled)
                 webLink.visibility = View.VISIBLE
-                webLink.text = "http://10.0.0.231:9000"
+                webLink.text = "http://localhost:$portValue"
                 invisibleButtons(openDialogPortBtn, openDialogAuthBtn)
             } else {
                 webLink.visibility = View.VISIBLE
@@ -177,5 +237,10 @@ class MainActivity : AppCompatActivity() {
         } else {
             // In versions prior to Android 13, notification permissions are granted automatically
         }
+    }
+
+    override fun onPortEntered(port: Int) {
+        portValue = port
+        Toast.makeText(this, "Received port: $portValue", Toast.LENGTH_SHORT).show()
     }
 }

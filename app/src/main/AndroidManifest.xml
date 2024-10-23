@@ -33,6 +33,15 @@
             </intent-filter>
         </activity>
 
+        <service android:name=".server.WebServerService"
+            android:exported="false"
+            android:foregroundServiceType="shortService">
+            <intent-filter>
+                <action android:name="com.riannreis.rcvw.START_SERVER" />
+            </intent-filter>
+
+        </service>
+
 
     </application>
 

@@ -33,6 +33,24 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    packagingOptions {
+        resources {
+            excludes += listOf(
+                "META-INF/INDEX.LIST",
+                "META-INF/LICENSE",
+                "META-INF/LICENSE.txt",
+                "META-INF/NOTICE",
+                "META-INF/NOTICE.txt",
+                "META-INF/DEPENDENCIES",
+                "META-INF/ASL2.0",
+                "META-INF/DEPENDENCIES.txt",
+                "META-INF/INDEX.LIST",
+                "META-INF/io.netty.versions.properties",
+                "META-INF/*.kotlin_module"
+            )
+        }
+    }
+
 }
 
 dependencies {
@@ -45,4 +63,20 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // ktor
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.netty)
+
+    implementation(libs.ktor.server.html.builder)
+    implementation(libs.ktor.server.status.pages)
+
+    implementation(libs.ktor.server.auth)
+
+    implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.serialization.gson)
+
+
+
+
 }
