@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".main.MainActivity">
 
     <TextView
         android:id="@+id/txt_title"
@@ -42,7 +42,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_desc"
-        tools:text="http://10.0.0.231:9000" />
+        tools:text="http://10.0.0.231:9090" />
 
     <Button
         android:id="@+id/btn_start_or_end_remote_control"

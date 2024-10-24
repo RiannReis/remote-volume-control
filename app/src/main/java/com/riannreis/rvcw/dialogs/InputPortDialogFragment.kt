@@ -1,4 +1,4 @@
-package com.riannreis.rvcw
+package com.riannreis.rvcw.dialogs
 
 import android.app.Dialog
 import android.content.Context
@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import com.riannreis.rvcw.R
 
 class InputPortDialogFragment : DialogFragment() {
 

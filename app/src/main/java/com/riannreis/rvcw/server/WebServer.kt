@@ -3,7 +3,7 @@ package com.riannreis.rvcw.server
 import android.content.Context
 import android.media.AudioManager
 import android.util.Log
-import com.riannreis.rvcw.InputPortDialogFragment
+import com.riannreis.rvcw.dialogs.InputPortDialogFragment
 import io.ktor.server.engine.EmbeddedServer
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -12,13 +12,15 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 
-class WebServer(private val context: Context, private val audioManager: AudioManager) : InputPortDialogFragment.PortDialogListener {
+class WebServer(private val context: Context, private val audioManager: AudioManager) :
+    InputPortDialogFragment.PortDialogListener {
 
     private var portValue = 9090
 
-    private var server: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>? = null
+    private var server: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>? =
+        null
 
-    fun startServer(port: Int){
+    fun startServer(port: Int) {
         if (server == null || port != portValue) {
 
             server?.stop(1000, 10000)
@@ -28,6 +30,17 @@ class WebServer(private val context: Context, private val audioManager: AudioMan
             server = embeddedServer(Netty, port = portValue) {
                 routing {
                     get("/") { call.respondText("Hello, world!") }
+
+                    get("/up") { setVolumeUp() }
+
+                    get("/down") { setVolumeDown() }
+
+                    get("/volume/{volume}") {
+                        val volume = call.parameters["volume"]?.toIntOrNull()
+                        if (volume != null) {
+                            setVolume(volume)
+                        }
+                    }
                 }
             }
 
@@ -44,9 +57,33 @@ class WebServer(private val context: Context, private val audioManager: AudioMan
 
     }
 
-    fun stopServer(){
+    fun stopServer() {
         server?.stop(1000, 10000)
         Log.d("WebServer", "Server stopped")
+    }
+
+    private fun setVolumeUp() {
+        audioManager.adjustVolume(AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND)
+        Log.d("WebServer", "Volume up")
+    }
+
+    private fun setVolumeDown() {
+        audioManager.adjustVolume(AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND)
+        Log.d("WebServer", "Volume down")
+    }
+
+    private fun setVolume(volume: Int) {
+        val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+        val adjustedVolume = when {
+            volume < 0 -> 0
+            volume > maxVolume -> maxVolume
+            else -> volume
+        }
+        audioManager.setStreamVolume(
+            AudioManager.STREAM_MUSIC,
+            adjustedVolume,
+            AudioManager.FLAG_PLAY_SOUND
+        )
     }
 
 

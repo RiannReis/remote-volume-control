@@ -1,4 +1,4 @@
-package com.riannreis.rvcw
+package com.riannreis.rvcw.main
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -18,6 +18,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.riannreis.rvcw.R
+import com.riannreis.rvcw.dialogs.InputAuthKeyDialogFragment
+import com.riannreis.rvcw.dialogs.InputPortDialogFragment
 import com.riannreis.rvcw.server.WebServer
 import com.riannreis.rvcw.server.WebServerService
 
