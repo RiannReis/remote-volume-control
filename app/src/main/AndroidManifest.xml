@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
+
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
@@ -35,7 +37,7 @@
 
         <service android:name=".server.WebServerService"
             android:exported="false"
-            android:foregroundServiceType="shortService">
+            android:foregroundServiceType="mediaPlayback">
             <intent-filter>
                 <action android:name="com.riannreis.rcvw.START_SERVER" />
             </intent-filter>

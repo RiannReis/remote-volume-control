@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -21,8 +22,8 @@ import androidx.core.view.WindowInsetsCompat
 import com.riannreis.rvcw.R
 import com.riannreis.rvcw.dialogs.InputAuthKeyDialogFragment
 import com.riannreis.rvcw.dialogs.InputPortDialogFragment
-import com.riannreis.rvcw.server.WebServer
 import com.riannreis.rvcw.server.WebServerService
+import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogListener {
 
@@ -37,8 +38,8 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
     private var serverIpIsPrivate: Boolean = true
     private var portValue: Int = 9090
     private var isRunning: Boolean = false
+    private var localIp: String? = null
 
-    private lateinit var webServer: WebServer
 
     private val requestNotificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
         isgranted: Boolean ->
@@ -60,6 +61,8 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
             insets
         }
 
+        localIp = getLocalIpAddress()
+
         checkAndRequestNotificationPermission()
 
         openDialogPortBtn = findViewById(R.id.btn_dialog_choose_port)
@@ -69,6 +72,8 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
         closeBtn = findViewById(R.id.btn_close)
         txtCloseDesc = findViewById(R.id.txt_close_desc)
         txtDesc = findViewById(R.id.txt_desc)
+
+        serverIpIsPrivate = isPrivateAddress(localIp)
 
         // Main Button (Enable / Disable)
 
@@ -133,6 +138,7 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
     private fun startRemoteControlService() {
         val intent = Intent(this, WebServerService::class.java)
         intent.putExtra("PORT_VALUE", portValue)
+        intent.putExtra("SERVER_IP", localIp)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent)
         } else {
@@ -187,7 +193,7 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
                 startOrEndRemoteControlBtn.setText(R.string.running)
                 txtDesc.setText(R.string.web_remote_volume_control_enabled)
                 webLink.visibility = View.VISIBLE
-                webLink.text = "http://localhost:$portValue"
+                webLink.text = "http://$localIp:$portValue"
                 invisibleButtons(openDialogPortBtn, openDialogAuthBtn)
             } else {
                 webLink.visibility = View.VISIBLE
@@ -241,6 +247,36 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
             // In versions prior to Android 13, notification permissions are granted automatically
         }
     }
+
+    private fun getLocalIpAddress(): String {
+        val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val ipInt = wifiManager.connectionInfo.ipAddress
+        return String.format(
+            "%d.%d.%d.%d",
+            ipInt and 0xff,
+            (ipInt shr 8) and 0xff,
+            (ipInt shr 16) and 0xff,
+            (ipInt shr 24) and 0xff
+        )
+    }
+
+    private fun isPrivateAddress(ip: String?): Boolean {
+        if (!ip.isNullOrEmpty()) {
+            val pattern = Pattern.compile("(\\d+)\\.(\\d+)\\.\\d+\\.\\d+")
+            val matcher = pattern.matcher(ip)
+            if (matcher.find()) {
+                val firstMember = matcher.group(1)?.toIntOrNull()
+                val secondMember = matcher.group(2)?.toIntOrNull()
+                if (firstMember != null && secondMember != null) {
+                    return (firstMember == 10) || // 10.0.0.0 – 10.255.255.255
+                            (firstMember == 172 && secondMember in 16..31) || // 172.16.0.0 – 172.31.255.255
+                            (firstMember == 192 && secondMember == 168) // 192.168.0.0 – 192.168.255.255
+                }
+            }
+        }
+        return false
+    }
+
 
     override fun onPortEntered(port: Int) {
         portValue = port

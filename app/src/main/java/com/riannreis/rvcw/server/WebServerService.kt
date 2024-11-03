@@ -19,10 +19,6 @@ class WebServerService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        webServer = WebServer(this, audioManager)
-        webServer.startServer(portValue)
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
@@ -33,6 +29,15 @@ class WebServerService : Service() {
             manager.createNotificationChannel(channel)
         }
 
+        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        webServer = WebServer(this, audioManager)
+        webServer.startServer(portValue)
+
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        portValue = intent?.getIntExtra("PORT_VALUE", 9090) ?: 9090
+
         val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Volume control active")
             .setContentText("Server running in the background.")
@@ -40,10 +45,8 @@ class WebServerService : Service() {
             .build()
 
         startForeground(NOTIFICATION_ID, notification)
-    }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        portValue = intent?.getIntExtra("PORT_VALUE", 9090) ?: 9090
+
         webServer.startServer(portValue)
         return START_STICKY
     }
