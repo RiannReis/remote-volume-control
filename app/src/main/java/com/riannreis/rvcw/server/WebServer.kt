@@ -5,14 +5,12 @@ import android.media.AudioManager
 import android.util.Log
 import com.riannreis.rvcw.dialogs.InputPortDialogFragment
 import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.gson.gson
 import io.ktor.server.application.install
 import io.ktor.server.engine.EmbeddedServer
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.html.respondHtml
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
@@ -60,10 +58,6 @@ class WebServer(
                             status = HttpStatusCode.InternalServerError
                         )
                     }
-                }
-
-                install(ContentNegotiation) {
-                    gson()
                 }
 
                 routing {
