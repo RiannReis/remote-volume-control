@@ -3,6 +3,7 @@ package com.riannreis.rvcw.server
 import android.content.Context
 import android.media.AudioManager
 import android.util.Log
+import com.riannreis.rvcw.AuthKeyProvider
 import com.riannreis.rvcw.dialogs.InputPortDialogFragment
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.install
@@ -62,20 +63,28 @@ class WebServer(
 
                 routing {
                     get("/") {
-                        call.respondHtml(HttpStatusCode.OK) {
-                            val currentVolume =
-                                audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
-                            val maxVolume =
-                                audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+
+                        val authKey = call.parameters["authKey"]
+
+                        if (authKey == AuthKeyProvider.secretKey) {
+                            Log.d("WebServer", "Authentication successful")
 
 
-                            head {
-                                title { +"Volume Control" }
+                            call.respondHtml(HttpStatusCode.OK) {
+                                val currentVolume =
+                                    audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+                                val maxVolume =
+                                    audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
 
-                                style {
-                                    unsafe {
-                                        raw(
-                                            """
+
+
+                                head {
+                                    title { +"Volume Control" }
+
+                                    style {
+                                        unsafe {
+                                            raw(
+                                                """
                                                 body {
                                                     display: flex;
                                                     flex-direction: column;
@@ -129,14 +138,14 @@ class WebServer(
                                                     color: #666;
                                                 }
                                             """.trimIndent()
-                                        )
+                                            )
+                                        }
                                     }
-                                }
 
-                                script {
-                                    unsafe {
-                                        raw(
-                                            """
+                                    script {
+                                        unsafe {
+                                            raw(
+                                                """
                                                 function asyncVolume(action) {
                                                     var xhr = new XMLHttpRequest();
                                                     xhr.open("GET", "/" + action, true);
@@ -149,40 +158,47 @@ class WebServer(
                                                     xhr.send();
                                                     }
                                                 """.trimIndent()
-                                        )
+                                            )
+                                        }
                                     }
                                 }
-                            }
-                            body {
-                                h1 { +"Volume Control" }
+                                body {
+                                    h1 { +"Volume Control" }
 
-                                div("container") {
-                                    div("buttons") {
-                                        button {
-                                            id = "up"
-                                            onClick = "asyncVolume('up')"
-                                            +"Volume Up"
+                                    div("container") {
+                                        div("buttons") {
+                                            button {
+                                                id = "up"
+                                                onClick = "asyncVolume('up')"
+                                                +"Volume Up"
+                                            }
+
+                                            button {
+                                                id = "down"
+                                                onClick = "asyncVolume('down')"
+                                                +"Volume Down"
+                                            }
                                         }
 
-                                        button {
-                                            id = "down"
-                                            onClick = "asyncVolume('down')"
-                                            +"Volume Down"
+                                        div("slider-container") {
+                                            input(type = InputType.range, name = "volume") {
+                                                min = "0"
+                                                max = maxVolume.toString()
+                                                value = currentVolume.toString()
+                                                onChange = "setVolume(this.value)"
+                                            }
+                                            p { +"Drag to adjust volume" }
                                         }
-                                    }
-
-                                    div("slider-container") {
-                                        input(type = InputType.range, name = "volume") {
-                                            min = "0"
-                                            max = maxVolume.toString()
-                                            value = currentVolume.toString()
-                                            onChange = "setVolume(this.value)"
-                                        }
-                                        p { +"Drag to adjust volume" }
                                     }
                                 }
-                            }
 
+                            }
+                        } else {
+                            Log.d("WebServer", "Authentication failed")
+                            call.respondText(
+                                text = "Authentication failed",
+                                status = HttpStatusCode.Unauthorized
+                            )
                         }
                     }
 

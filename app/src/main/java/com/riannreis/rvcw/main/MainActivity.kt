@@ -19,13 +19,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.riannreis.rvcw.AuthKeyProvider
 import com.riannreis.rvcw.R
 import com.riannreis.rvcw.dialogs.InputAuthKeyDialogFragment
 import com.riannreis.rvcw.dialogs.InputPortDialogFragment
 import com.riannreis.rvcw.server.WebServerService
 import java.util.regex.Pattern
 
-class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogListener {
+class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogListener, InputAuthKeyDialogFragment.AuthDialogListener {
 
     private lateinit var openDialogPortBtn: Button
     private lateinit var openDialogAuthBtn: Button
@@ -39,7 +40,7 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
     private var portValue: Int = 9090
     private var isRunning: Boolean = false
     private var localIp: String? = null
-
+    private var rvcwURL: String? = null
 
     private val requestNotificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
         isgranted: Boolean ->
@@ -62,6 +63,8 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
         }
 
         localIp = getLocalIpAddress()
+
+        rvcwURL = "http://$localIp:$portValue/?authKey=${AuthKeyProvider.secretKey}"
 
         checkAndRequestNotificationPermission()
 
@@ -153,39 +156,6 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
         updateActivity()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        // Saves the 'start' state (whether it is 'running' or not)
-
-        // Saves the link text (if visible)
-        outState.putString("webLinkText", webLink.text.toString())
-
-        // Save link visibility
-        outState.putBoolean("isWebLinkVisible", webLink.visibility == View.VISIBLE)
-    }
-
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-
-        // Restores the 'start' state
-
-        // Restores the link if visible
-        val webLinkText = savedInstanceState.getString("webLinkText")
-        val isWebLinkVisible = savedInstanceState.getBoolean("isWebLinkVisible", false)
-
-        if (isWebLinkVisible) {
-            webLink.visibility = View.VISIBLE
-            webLink.text = webLinkText
-        } else {
-            webLink.visibility = View.GONE
-        }
-
-        // Updates interface
-        updateActivity()
-    }
-
 
     private fun updateActivity() {
         if (isRunning) {
@@ -193,7 +163,7 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
                 startOrEndRemoteControlBtn.setText(R.string.running)
                 txtDesc.setText(R.string.web_remote_volume_control_enabled)
                 webLink.visibility = View.VISIBLE
-                webLink.text = "http://$localIp:$portValue"
+                webLink.text = rvcwURL
                 invisibleButtons(openDialogPortBtn, openDialogAuthBtn)
             } else {
                 webLink.visibility = View.VISIBLE
@@ -281,5 +251,11 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
     override fun onPortEntered(port: Int) {
         portValue = port
         Toast.makeText(this, "Received port: $portValue", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onAuthKeyEntered(secretKey: String) {
+        AuthKeyProvider.secretKey = secretKey
+        rvcwURL = "http://$localIp:$portValue/?authKey=${AuthKeyProvider.secretKey}"
+
     }
 }
