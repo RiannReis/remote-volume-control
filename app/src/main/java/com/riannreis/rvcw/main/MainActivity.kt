@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -24,8 +23,11 @@ import com.riannreis.rvcw.R
 import com.riannreis.rvcw.dialogs.InputAuthKeyDialogFragment
 import com.riannreis.rvcw.dialogs.InputPortDialogFragment
 import com.riannreis.rvcw.server.WebServerService
-import java.util.Locale
-import java.util.regex.Pattern
+import java.net.Inet4Address
+import java.net.InetAddress
+import java.net.NetworkInterface
+import java.net.SocketException
+import java.net.UnknownHostException
 
 class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogListener, InputAuthKeyDialogFragment.AuthDialogListener {
 
@@ -37,15 +39,15 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
     private lateinit var txtDesc: TextView
     private lateinit var webLink: TextView
 
-    private var serverIpIsPrivate: Boolean = true
+    private var isServerIpPrivate: Boolean = true
     private var portValue: Int = 9090
     private var isRunning: Boolean = false
     private var localIp: String? = null
     private var rvcwURL: String? = null
 
     private val requestNotificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-        isgranted: Boolean ->
-        if (isgranted){
+        isGranted: Boolean ->
+        if (isGranted){
 
         } else {
 
@@ -62,6 +64,8 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        isRunning = loadServerState()
 
         localIp = getLocalIpAddress()
 
@@ -81,7 +85,7 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
         txtCloseDesc = findViewById(R.id.txt_close_desc)
         txtDesc = findViewById(R.id.txt_desc)
 
-        serverIpIsPrivate = isPrivateAddress(localIp)
+        isServerIpPrivate = isPrivateAddress(localIp)
 
         // Main Button (Enable / Disable)
 
@@ -118,6 +122,11 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
 
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean("isRunning", isRunning)
+    }
+
     private val serverStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val isRunning = intent?.getBooleanExtra("IS_RUNNING", false) ?: false
@@ -128,6 +137,8 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
 
     override fun onStart() {
         super.onStart()
+        updateActivity()
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 registerReceiver(serverStateReceiver, IntentFilter("SERVER_STATE_UPDATE"),
@@ -147,24 +158,27 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
         val intent = Intent(this, WebServerService::class.java)
         intent.putExtra("PORT_VALUE", portValue)
         intent.putExtra("SERVER_IP", localIp)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent)
         } else {
             startService(intent)
         }
-        updateActivity()
 
+        saveServerState(true)
+        updateActivity()
     }
 
     private fun stopRemoteControlService() {
         stopService(Intent(this, WebServerService::class.java))
+        saveServerState(false)
         updateActivity()
     }
 
 
     private fun updateActivity() {
         if (isRunning) {
-            if (serverIpIsPrivate) {
+            if (isServerIpPrivate) {
                 startOrEndRemoteControlBtn.setText(R.string.running)
                 txtDesc.setText(R.string.web_remote_volume_control_enabled)
                 webLink.visibility = View.VISIBLE
@@ -178,7 +192,7 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
             }
         } else {
             startOrEndRemoteControlBtn.setText(R.string.start)
-            if (serverIpIsPrivate) {
+            if (isServerIpPrivate) {
                 txtDesc.setText(R.string.web_remote_volume_control_disabled)
                 webLink.visibility = View.GONE
                 visibleButtons(openDialogPortBtn, openDialogAuthBtn)
@@ -223,34 +237,37 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
         }
     }
 
-    private fun getLocalIpAddress(): String {
-        val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val ipInt = wifiManager.connectionInfo.ipAddress
-        return String.format(
-            Locale.US,
-            "%d.%d.%d.%d",
-            ipInt and 0xff,
-            (ipInt shr 8) and 0xff,
-            (ipInt shr 16) and 0xff,
-            (ipInt shr 24) and 0xff
-        )
+    private fun getLocalIpAddress(): String? {
+        try {
+            val networkInterfaces = NetworkInterface.getNetworkInterfaces()
+            while (networkInterfaces.hasMoreElements()) {
+                val networkInterface = networkInterfaces.nextElement()
+                if (!networkInterface.isLoopback) {
+                    val inetAddresses = networkInterface.inetAddresses
+                    while (inetAddresses.hasMoreElements()) {
+                        val inetAddress = inetAddresses.nextElement()
+                        if (!inetAddress.isLoopbackAddress && inetAddress is Inet4Address) {
+                            return inetAddress.hostAddress
+                        }
+                    }
+                }
+            }
+        } catch (ex: SocketException) {
+            Log.e("getLocalIpAddress", "Error getting IP address: ${ex.message}")
+        }
+        return null // Return null if no valid IP is found
     }
 
     private fun isPrivateAddress(ip: String?): Boolean {
-        if (!ip.isNullOrEmpty()) {
-            val pattern = Pattern.compile("(\\d+)\\.(\\d+)\\.\\d+\\.\\d+")
-            val matcher = pattern.matcher(ip)
-            if (matcher.find()) {
-                val firstMember = matcher.group(1)?.toIntOrNull()
-                val secondMember = matcher.group(2)?.toIntOrNull()
-                if (firstMember != null && secondMember != null) {
-                    return (firstMember == 10) || // 10.0.0.0 – 10.255.255.255
-                            (firstMember == 172 && secondMember in 16..31) || // 172.16.0.0 – 172.31.255.255
-                            (firstMember == 192 && secondMember == 168) // 192.168.0.0 – 192.168.255.255
-                }
-            }
+        if (ip.isNullOrEmpty()) {
+            return false
         }
-        return false
+        return try {
+            val address = InetAddress.getByName(ip)
+            address.isSiteLocalAddress
+        } catch (e: UnknownHostException) {
+            false
+        }
     }
 
 
@@ -274,5 +291,15 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
     private fun loadPort(): Int {
         val sharedPrefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
         return sharedPrefs.getInt("port", 9090)
+    }
+
+    private fun saveServerState(isRunning: Boolean) {
+        val sharedPrefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        sharedPrefs.edit().putBoolean("isRunning", isRunning).apply()
+    }
+
+    private fun loadServerState(): Boolean {
+        val sharedPrefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        return sharedPrefs.getBoolean("isRunning", false)
     }
 }
