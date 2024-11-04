@@ -10,7 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import com.riannreis.rvcw.R
 
-class InputAuthKeyDialogFragment: DialogFragment() {
+class InputAuthKeyDialogFragment : DialogFragment() {
 
     private lateinit var authDialogListener: AuthDialogListener
 
@@ -47,7 +47,7 @@ class InputAuthKeyDialogFragment: DialogFragment() {
 
             okBtn.setOnClickListener {
                 val secretKey = authKey.text.toString()
-                if (secretKey.isNotEmpty()){
+                if (secretKey.isNotEmpty()) {
                     if (secretKey.length > 20) {
                         Toast.makeText(
                             requireContext(),
@@ -55,13 +55,27 @@ class InputAuthKeyDialogFragment: DialogFragment() {
                             Toast.LENGTH_LONG
                         ).show()
                     } else {
-                        Toast.makeText(requireContext(), "Valid value: $secretKey", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Valid value: $secretKey",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
                         authDialogListener.onAuthKeyEntered(secretKey)
                         dismiss()
+
+                        val sharedPrefs =
+                            requireActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+                        val editor = sharedPrefs.edit()
+
+                        editor.putString("authKey", secretKey)
+                        editor.apply()
+
                     }
 
                 } else {
-                    Toast.makeText(requireContext(), "Please, insert a value.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Please, insert a value.", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
 

@@ -24,6 +24,7 @@ import com.riannreis.rvcw.R
 import com.riannreis.rvcw.dialogs.InputAuthKeyDialogFragment
 import com.riannreis.rvcw.dialogs.InputPortDialogFragment
 import com.riannreis.rvcw.server.WebServerService
+import java.util.Locale
 import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogListener, InputAuthKeyDialogFragment.AuthDialogListener {
@@ -63,6 +64,10 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
         }
 
         localIp = getLocalIpAddress()
+
+        portValue = loadPort()
+
+        AuthKeyProvider.secretKey = loadAuthKey()
 
         rvcwURL = "http://$localIp:$portValue/?authKey=${AuthKeyProvider.secretKey}"
 
@@ -121,8 +126,8 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 registerReceiver(serverStateReceiver, IntentFilter("SERVER_STATE_UPDATE"),
@@ -132,8 +137,8 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
         }
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         unregisterReceiver(serverStateReceiver)
     }
 
@@ -222,6 +227,7 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
         val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val ipInt = wifiManager.connectionInfo.ipAddress
         return String.format(
+            Locale.US,
             "%d.%d.%d.%d",
             ipInt and 0xff,
             (ipInt shr 8) and 0xff,
@@ -251,11 +257,22 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
     override fun onPortEntered(port: Int) {
         portValue = port
         Toast.makeText(this, "Received port: $portValue", Toast.LENGTH_SHORT).show()
+        rvcwURL = "http://$localIp:$portValue/?authKey=${AuthKeyProvider.secretKey}"
     }
 
     override fun onAuthKeyEntered(secretKey: String) {
         AuthKeyProvider.secretKey = secretKey
         rvcwURL = "http://$localIp:$portValue/?authKey=${AuthKeyProvider.secretKey}"
 
+    }
+
+    private fun loadAuthKey(): String {
+        val sharedPrefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        return sharedPrefs.getString("authKey", "3x@mplE_S3crEt_K3y!") ?: "3x@mplE_S3crEt_K3y!"
+    }
+
+    private fun loadPort(): Int {
+        val sharedPrefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+        return sharedPrefs.getInt("port", 9090)
     }
 }

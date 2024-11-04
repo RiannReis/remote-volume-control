@@ -9,13 +9,13 @@
     <string name="close_description">The app will remain working after pressing the button below</string>
     <string name="close">Close</string>
     <string name="input_port_txt">Enter the port on which the service will start:</string>
-    <string name="default_port">9000</string>
+    <string name="default_port">9090</string>
     <string name="default_port_desc">The default port is 9090, this adjustment is optional.</string>
     <string name="secret_key_example">3x@mplE_S3crEt_K3y!</string>
     <string name="auth_desc">This is just a simple authentication method to prevent unauthorized access.</string>
     <string name="basic_auth_txt">Enter the secret key you want to use below:</string>
     <string name="auth">Auth</string>
-    <string name="verify_local_network_connection">Verify that you are connected to your local network (Wifi).</string>
+    <string name="verify_local_network_connection">Verify that you are connected to your local network (Wifi) and restart the application.</string>
     <string name="about_private_limitation">This application limits itself to local network IP addresses (192.168.*.*, 10.*.*.*, or 172.16.0.0 to 172.31.255.255).</string>
     <string name="unable_to_find_local_address">Volume remote control is disabled. Unable to find a local network IP address.</string>
 </resources>

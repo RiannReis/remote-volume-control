@@ -55,8 +55,17 @@ class InputPortDialogFragment : DialogFragment() {
                     if (port in 1024..65535) {
                         Toast.makeText(requireContext(), "Valid port: $port", Toast.LENGTH_SHORT)
                             .show()
+
                         portDialogListener.onPortEntered(port)
                         dismiss() // Closes dialog.
+
+                        val sharedPrefs = requireActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+                        val editor = sharedPrefs.edit()
+
+                        editor.putInt("port", port)
+                        editor.apply()
+
+
                     } else {
                         Toast.makeText(
                             requireContext(),
