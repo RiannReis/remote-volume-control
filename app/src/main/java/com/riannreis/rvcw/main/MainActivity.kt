@@ -99,6 +99,12 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
             isRunning = !isRunning
             updateActivity()
 
+            startOrEndRemoteControlBtn.isEnabled = false
+
+            startOrEndRemoteControlBtn.postDelayed({
+                startOrEndRemoteControlBtn.isEnabled = true
+            }, 1000) // Delay in milliseconds
+
 
             Log.d("WebServer", "Server state toggled. Running: $isRunning")
         }
@@ -155,18 +161,21 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
 
 
     private fun startRemoteControlService() {
-        val intent = Intent(this, WebServerService::class.java)
-        intent.putExtra("PORT_VALUE", portValue)
-        intent.putExtra("SERVER_IP", localIp)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent)
-        } else {
-            startService(intent)
+        if (!isRunning) {
+            val intent = Intent(this, WebServerService::class.java)
+            intent.putExtra("PORT_VALUE", portValue)
+            intent.putExtra("SERVER_IP", localIp)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent)
+            } else {
+                startService(intent)
+            }
+
+            saveServerState(true)
+            updateActivity()
         }
-
-        saveServerState(true)
-        updateActivity()
     }
 
     private fun stopRemoteControlService() {
