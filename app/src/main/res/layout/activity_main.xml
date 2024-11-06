@@ -7,6 +7,19 @@
     android:layout_height="match_parent"
     tools:context=".main.MainActivity">
 
+    <ImageButton
+        android:id="@+id/img_btn_question_mark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/img_btn_question_mark_desc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@android:drawable/ic_menu_help"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        />
+
     <TextView
         android:id="@+id/txt_title"
         android:layout_width="wrap_content"

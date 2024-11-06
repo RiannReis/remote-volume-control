@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">rvcw</string>
+    <string name="app_name">remote-volume-control</string>
     <string name="choose_port">Choose port</string>
     <string name="start">Start</string>
     <string name="running">Running…</string>
@@ -19,4 +19,6 @@
     <string name="about_private_limitation">This application limits itself to local network IP addresses (192.168.*.*, 10.*.*.*, or 172.16.0.0 to 172.31.255.255).</string>
     <string name="unable_to_find_local_address">Volume remote control is disabled. Unable to find a local network IP address.</string>
     <string name="auto">Auto Mode </string>
+    <string name="img_btn_question_mark_desc">ImageButton with a question mark symbol, which describes the Auto Mode.</string>
+    <string name="auto_mode_description">The Automatic mode, when enabled, allows the application to start automatically after the system boots. Web Remote Volume Control will launch without requiring manual input.</string>
 </resources>

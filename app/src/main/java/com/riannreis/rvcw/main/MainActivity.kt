@@ -10,10 +10,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
@@ -41,6 +43,7 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
     private lateinit var txtDesc: TextView
     private lateinit var webLink: TextView
     private lateinit var autoStartSwitch: SwitchCompat
+    private lateinit var imgBtnHelp: ImageButton
 
     private val prefs by lazy {
         getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
@@ -92,6 +95,7 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
         txtCloseDesc = findViewById(R.id.txt_close_desc)
         txtDesc = findViewById(R.id.txt_desc)
         autoStartSwitch = findViewById(R.id.switch_auto)
+        imgBtnHelp = findViewById(R.id.img_btn_question_mark)
 
         autoStartSwitch.isChecked = prefs.getBoolean("autoStartEnabled", false)
         Log.d("MainActivity", "AutoStart switch state loaded: ${autoStartSwitch.isChecked}")
@@ -136,6 +140,12 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
 
         openDialogAuthBtn.setOnClickListener {
             InputAuthKeyDialogFragment().show(supportFragmentManager, "INPUT_SECRET_KEY")
+        }
+
+        // ImageButton
+
+        imgBtnHelp.setOnClickListener {
+            showAutoModeInfoDialog()
         }
 
         // Close
@@ -238,6 +248,14 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
 
             }
         }
+    }
+
+    private fun showAutoModeInfoDialog(){
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(getString(R.string.auto))
+        builder.setMessage(getString(R.string.auto_mode_description))
+        builder.setPositiveButton(android.R.string.ok, null)
+        builder.create().show()
     }
 
 
