@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">remote-volume-control</string>
+    <string name="app_name" translatable="false">remote volume control</string>
     <string name="choose_port">Choose port</string>
     <string name="start">Start</string>
     <string name="running">Running…</string>
@@ -9,16 +9,24 @@
     <string name="close_description">The app will remain working after pressing the button below</string>
     <string name="close">Close</string>
     <string name="input_port_txt">Enter the port on which the service will start:</string>
-    <string name="default_port">9090</string>
+    <string name="default_port" translatable="false">9090</string>
     <string name="default_port_desc">The default port is 9090, this adjustment is optional.</string>
-    <string name="secret_key_example">3x@mplE_S3crEt_K3y!</string>
+    <string name="secret_key_example" translatable="false">3x@mplE_S3crEt_K3y!</string>
     <string name="auth_desc">This is just a simple authentication method to prevent unauthorized access.</string>
     <string name="basic_auth_txt">Enter the secret key you want to use below:</string>
-    <string name="auth">Auth</string>
+    <string name="auth" translatable="false">Auth</string>
     <string name="verify_local_network_connection">Verify that you are connected to your local network (Wifi) and restart the application.</string>
     <string name="about_private_limitation">This application limits itself to local network IP addresses (192.168.*.*, 10.*.*.*, or 172.16.0.0 to 172.31.255.255).</string>
     <string name="unable_to_find_local_address">Volume remote control is disabled. Unable to find a local network IP address.</string>
-    <string name="auto">Auto Mode </string>
+    <string name="auto" translatable="false">Auto Mode </string>
     <string name="img_btn_question_mark_desc">ImageButton with a question mark symbol, which describes the Auto Mode.</string>
     <string name="auto_mode_description">The Automatic mode, when enabled, allows the application to start automatically after the system boots. Web Remote Volume Control will launch without requiring manual input.</string>
+    <string name="value_too_long">Value is too long! 20 characters is the max.</string>
+    <string name="valid_value">Valid value: %1$s</string>
+    <string name="insert_value">Please, insert a value.</string>
+    <string name="valid_port">Valid port: %1$d</string>
+    <string name="invalid_port_value">Invalid port! Value must be between 1024 and 65535.</string>
+    <string name="volume_control_active">Volume control active</string>
+    <string name="server_running_in_the_background">Server running in the background.</string>
+    <string name="received_port">Received port: %1$d</string>
 </resources>

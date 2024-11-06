@@ -51,13 +51,13 @@ class InputAuthKeyDialogFragment : DialogFragment() {
                     if (secretKey.length > 20) {
                         Toast.makeText(
                             requireContext(),
-                            "Value is too long! 20 characters is the max.",
+                            getString(R.string.value_too_long),
                             Toast.LENGTH_LONG
                         ).show()
                     } else {
                         Toast.makeText(
                             requireContext(),
-                            "Valid value: $secretKey",
+                            getString(R.string.valid_value, secretKey),
                             Toast.LENGTH_SHORT
                         ).show()
 
@@ -74,7 +74,8 @@ class InputAuthKeyDialogFragment : DialogFragment() {
                     }
 
                 } else {
-                    Toast.makeText(requireContext(), "Please, insert a value.", Toast.LENGTH_SHORT)
+                    Toast.makeText(requireContext(),
+                        getString(R.string.insert_value), Toast.LENGTH_SHORT)
                         .show()
                 }
             }

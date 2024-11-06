@@ -326,7 +326,7 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
 
     override fun onPortEntered(port: Int) {
         portValue = port
-        Toast.makeText(this, "Received port: $portValue", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.received_port, portValue), Toast.LENGTH_SHORT).show()
         rvcwURL = "http://$localIp:$portValue/?authKey=${AuthKeyProvider.secretKey}"
     }
 

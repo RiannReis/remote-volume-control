@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <string name="choose_port">Escolha a porta</string>
+    <string name="start">Iniciar</string>
+    <string name="running">Executando…</string>
+    <string name="web_remote_volume_control_enabled">O Controle de Volume Remoto pela Web está ativado. Conecte-se ao endereço abaixo para começar a controlar o volume do som remotamente.</string>
+    <string name="web_remote_volume_control_disabled">O Controle de Volume Remoto pela Web está desativado. Pressione o botão abaixo para iniciar o serviço.</string>
+    <string name="title">Controle de volume remoto pela Web</string>
+    <string name="close_description">O aplicativo continuará funcionando após pressionar o botão abaixo</string>
+    <string name="close">Fechar</string>
+    <string name="input_port_txt">Insira a porta na qual o serviço será iniciado:</string>
+    <string name="default_port_desc">A porta padrão é 9090, este ajuste é opcional.</string>
+    <string name="auth_desc">Este é apenas um método de autenticação simples para evitar acesso não autorizado.</string>
+    <string name="basic_auth_txt">Insira a chave secreta que você deseja usar abaixo:</string>
+    <string name="verify_local_network_connection">Verifique se você está conectado à sua rede local (Wi-Fi) e reinicie o aplicativo.</string>
+    <string name="about_private_limitation">Este aplicativo se limita a endereços IP de rede local (192.168.*.*, 10.*.*.*, ou 172.16.0.0 a 172.31.255.255).</string>
+    <string name="unable_to_find_local_address">O controle de volume remoto está desativado. Não foi possível encontrar um endereço IP de rede local.</string>
+    <string name="img_btn_question_mark_desc">ImageButton com um símbolo de ponto de interrogação, que descreve o Modo Automático.</string>
+    <string name="auto_mode_description">O Modo Automático, quando ativado, permite que o aplicativo inicie automaticamente após a inicialização do sistema. O Controle de Volume Remoto pela Web será lançado sem exigir entrada manual.</string>
+    <string name="value_too_long">O valor é muito longo! O máximo é 20 caracteres.</string>
+    <string name="valid_value">Valor válido: %1$s</string>
+    <string name="insert_value">Por favor, insira um valor.</string>
+    <string name="valid_port">Porta válida: %1$d</string>
+    <string name="invalid_port_value">Porta inválida! O valor deve estar entre 1024 e 65535.</string>
+    <string name="volume_control_active">Controlador de Volume ativado</string>
+    <string name="server_running_in_the_background">Servidor em execução em segundo plano.</string>
+    <string name="received_port">Received port: %1$d</string>
+</resources>

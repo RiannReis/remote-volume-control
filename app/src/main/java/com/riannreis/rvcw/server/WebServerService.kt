@@ -41,9 +41,9 @@ class WebServerService : Service() {
         authKey = intent?.getStringExtra("AUTH_KEY") ?: AuthKeyProvider.secretKey
 
         val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Volume control active")
-            .setContentText("Server running in the background.")
-            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setContentTitle(getString(R.string.volume_control_active))
+            .setContentText(getString(R.string.server_running_in_the_background))
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
             .build()
 
         startForeground(NOTIFICATION_ID, notification)

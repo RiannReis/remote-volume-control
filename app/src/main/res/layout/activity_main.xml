@@ -21,6 +21,7 @@
         />
 
     <TextView
+        android:gravity="center"
         android:id="@+id/txt_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -69,14 +70,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.SwitchCompat
-        android:layout_marginStart="32dp"
         android:id="@+id/switch_auto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/auto"
         app:layout_constraintBottom_toTopOf="@id/txt_close_desc"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/btn_dialog_basic_auth"
+        app:layout_constraintStart_toEndOf="@id/btn_dialog_choose_port"
         app:layout_constraintTop_toBottomOf="@id/btn_start_or_end_remote_control" />
 
     <Button

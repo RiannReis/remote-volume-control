@@ -21,4 +21,12 @@
     <string name="auto">Auto Mode </string>
     <string name="img_btn_question_mark_desc">ImageButton with a question mark symbol, which describes the Auto Mode.</string>
     <string name="auto_mode_description">The Automatic mode, when enabled, allows the application to start automatically after the system boots. Web Remote Volume Control will launch without requiring manual input.</string>
+    <string name="value_too_long">Value is too long! 20 characters is the max.</string>
+    <string name="valid_value">Valid value: %1$s</string>
+    <string name="insert_value">Please, insert a value.</string>
+    <string name="valid_port">Valid port: %1$d</string>
+    <string name="invalid_port_value">Invalid port! Value must be between 1024 and 65535.</string>
+    <string name="volume_control_active">Volume control active</string>
+    <string name="server_running_in_the_background">Server running in the background.</string>
+    <string name="received_port">Received port: %1$d</string>
 </resources>

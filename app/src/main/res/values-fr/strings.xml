@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="choose_port">Choisissez le port</string>
+    <string name="start">Activer</string>
+    <string name="running">En cours…</string>
+    <string name="web_remote_volume_control_enabled">Le contrôle du volume à distance est activé. Connectez vous à l\\\'adresse ci-dessous depuis un autre appareil pour commencer à contrôler le volume à distance</string>
+    <string name="web_remote_volume_control_disabled">Le contrôle du volume à distance est désactivé. Vous devez d\\\'abord l\\\'activer pour pouvoir contrôle le volume sonore à distance.</string>
+    <string name="title">Contrôle du volume à distance via le Web</string>
+    <string name="close_description">Le contrôle du volume à distance restera accessible après que vous ayez fermé cette fenêtre.</string>
+    <string name="close">Fermer</string>
+    <string name="input_port_txt">Saisissez le port sur lequel le service démarrera :</string>
+    <string name="default_port_desc">Le port par défaut est 9090, ce réglage est facultatif.</string>
+    <string name="auth_desc">Il s\'agit simplement d\'une simple méthode d\'authentification pour empêcher tout accès non autorisé.</string>
+    <string name="basic_auth_txt">Entrez la clé secrète que vous souhaitez utiliser ci-dessous :</string>
+    <string name="verify_local_network_connection">Vérifiez que vous êtes connecté·e à votre réseau local (Wifi).</string>
+    <string name="about_private_limitation">Cette application se limite aux adresses IP de réseau local (192.168.*.*, 10.*.*.*, ou de 172.16.0.0 à 172.31.255.255).</string>
+    <string name="unable_to_find_local_address">Le contrôle du volume à distance est désactivé. Impossible de trouver une adresse IP de réseau local.</string>
+    <string name="img_btn_question_mark_desc">ImageButton avec un symbole de point d\'interrogation, qui décrit le mode automatique.</string>
+    <string name="auto_mode_description">Le mode Automatique, lorsqu\'il est activé, permet à l\'application de démarrer automatiquement après le démarrage du système. Le contrôle du volume à distance Web se lancera sans nécessiter de saisie manuelle.</string>
+    <string name="value_too_long">La valeur est trop longue ! 20 caractères est le maximum.</string>
+    <string name="valid_value">Valeur valide: %1$s</string>
+    <string name="insert_value">Veuillez insérer une valeur.</string>
+    <string name="valid_port">Port valide: %1$d</string>
+    <string name="invalid_port_value">Port invalide ! La valeur doit être comprise entre 1024 et 65535.</string>
+    <string name="volume_control_active">Le contrôle du volume à distance est activé.</string>
+    <string name="server_running_in_the_background">Serveur fonctionnant en arrière-plan.</string>
+    <string name="received_port">Port reçu: %1$d</string>
+</resources>

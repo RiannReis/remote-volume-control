@@ -53,7 +53,8 @@ class InputPortDialogFragment : DialogFragment() {
                 if (portText.isNotEmpty()) {
                     val port = portText.toInt()
                     if (port in 1024..65535) {
-                        Toast.makeText(requireContext(), "Valid port: $port", Toast.LENGTH_SHORT)
+                        Toast.makeText(requireContext(),
+                            getString(R.string.valid_port, port), Toast.LENGTH_SHORT)
                             .show()
 
                         portDialogListener.onPortEntered(port)
@@ -69,12 +70,12 @@ class InputPortDialogFragment : DialogFragment() {
                     } else {
                         Toast.makeText(
                             requireContext(),
-                            "Invalid port! Value must be between 1024 and 65535.",
+                            getString(R.string.invalid_port_value),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
                 } else {
-                    Toast.makeText(requireContext(), "Please, insert a value.", Toast.LENGTH_SHORT)
+                    Toast.makeText(requireContext(), getString(R.string.insert_value), Toast.LENGTH_SHORT)
                         .show()
                 }
             }

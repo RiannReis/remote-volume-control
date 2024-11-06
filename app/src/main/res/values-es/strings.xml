@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="choose_port">Elige el puerto</string>
+    <string name="start">empezar</string>
+    <string name="running">Ejecutando</string>
+    <string name="web_remote_volume_control_enabled">El control de volumen remoto web está habilitado. Conéctese a la dirección a continuación para comenzar a controlar el volumen de su sonido de forma remota.</string>
+    <string name="web_remote_volume_control_disabled">El control remoto de volumen web está deshabilitado. Presione el botón de abajo para iniciar el servicio.</string>
+    <string name="title">Control remoto de volumen vía web</string>
+    <string name="close_description">La aplicación seguirá funcionando después de presionar el botón de abajo</string>
+    <string name="close">Cerrar</string>
+    <string name="input_port_txt">Ingrese el puerto en el que se iniciará el servicio:</string>
+    <string name="default_port_desc">El puerto predeterminado es 9090, esta configuración es opcional.</string>
+    <string name="auth_desc">Este es sólo un método de autenticación simple para evitar el acceso no autorizado.</string>
+    <string name="basic_auth_txt">Ingrese la clave secreta que desea utilizar a continuación:</string>
+    <string name="verify_local_network_connection">Asegúrate de estar conectado a tu red local (Wi-Fi) y reinicia la aplicación.</string>
+    <string name="about_private_limitation">Esta aplicación está limitada a direcciones IP de red local (192.168.*.*, 10.*.*.* o 172.16.0.0 a 172.31.255.255).</string>
+    <string name="unable_to_find_local_address">El control de volumen remoto está deshabilitado. No se puede encontrar una dirección IP de red local.</string>
+    <string name="img_btn_question_mark_desc">ImageButton con un símbolo de interrogación que describe el modo automático.</string>
+    <string name="auto_mode_description">El modo automático, cuando está habilitado, permite que la aplicación se inicie automáticamente después de que se inicia el sistema. El control de volumen remoto web se iniciará sin necesidad de entrada manual.</string>
+    <string name="value_too_long">¡El valor es demasiado largo! El máximo es 20 caracteres.</string>
+    <string name="valid_value">Valor válido: %1$s</string>
+    <string name="insert_value">Por favor ingrese un valor.</string>
+    <string name="valid_port">Puerto válido: %1$d</string>
+    <string name="invalid_port_value">¡Puerto no válido! El valor debe estar entre 1024 y 65535.</string>
+    <string name="volume_control_active">Controlador de volumen activado</string>
+    <string name="server_running_in_the_background">Servidor ejecutándose en segundo plano.</string>
+    <string name="received_port">Puerto recibido: %1$d</string>
+</resources>
