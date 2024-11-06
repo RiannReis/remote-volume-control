@@ -39,16 +39,18 @@ class WebServer(
     InputPortDialogFragment.PortDialogListener {
 
     private var portValue = 9090
+    private var authKey = AuthKeyProvider.secretKey
 
     private var server: EmbeddedServer<NettyApplicationEngine, NettyApplicationEngine.Configuration>? =
         null
 
-    fun startServer(port: Int) {
-        if (server == null || port != portValue) {
+    fun startServer(port: Int, authKey: String) {
+        if (server == null || port != portValue || authKey != this.authKey) {
 
             server?.stop(1000, 10000)
 
             portValue = port
+            this.authKey = authKey
 
             server = embeddedServer(Netty, port = portValue) {
 
@@ -64,9 +66,9 @@ class WebServer(
                 routing {
                     get("/") {
 
-                        val authKey = call.parameters["authKey"]
+                        val reqAuthKey = call.parameters["authKey"]
 
-                        if (authKey == AuthKeyProvider.secretKey) {
+                        if (reqAuthKey == this@WebServer.authKey) {
                             Log.d("WebServer", "Authentication successful")
 
 

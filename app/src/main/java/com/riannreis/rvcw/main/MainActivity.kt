@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -29,7 +30,8 @@ import java.net.NetworkInterface
 import java.net.SocketException
 import java.net.UnknownHostException
 
-class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogListener, InputAuthKeyDialogFragment.AuthDialogListener {
+class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogListener,
+    InputAuthKeyDialogFragment.AuthDialogListener {
 
     private lateinit var openDialogPortBtn: Button
     private lateinit var openDialogAuthBtn: Button
@@ -38,6 +40,11 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
     private lateinit var txtCloseDesc: TextView
     private lateinit var txtDesc: TextView
     private lateinit var webLink: TextView
+    private lateinit var autoStartSwitch: SwitchCompat
+
+    private val prefs by lazy {
+        getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+    }
 
     private var isServerIpPrivate: Boolean = true
     private var portValue: Int = 9090
@@ -45,14 +52,14 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
     private var localIp: String? = null
     private var rvcwURL: String? = null
 
-    private val requestNotificationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-        isGranted: Boolean ->
-        if (isGranted){
+    private val requestNotificationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
 
-        } else {
+            } else {
 
+            }
         }
-    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,13 +91,18 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
         closeBtn = findViewById(R.id.btn_close)
         txtCloseDesc = findViewById(R.id.txt_close_desc)
         txtDesc = findViewById(R.id.txt_desc)
+        autoStartSwitch = findViewById(R.id.switch_auto)
+
+        autoStartSwitch.isChecked = prefs.getBoolean("autoStartEnabled", false)
+        Log.d("MainActivity", "AutoStart switch state loaded: ${autoStartSwitch.isChecked}")
+
 
         isServerIpPrivate = isPrivateAddress(localIp)
 
         // Main Button (Enable / Disable)
 
         startOrEndRemoteControlBtn.setOnClickListener {
-            if (isRunning){
+            if (isRunning) {
                 stopRemoteControlService()
             } else {
                 startRemoteControlService()
@@ -107,6 +119,12 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
 
 
             Log.d("WebServer", "Server state toggled. Running: $isRunning")
+        }
+
+        // Switch for Auto Mode
+
+        autoStartSwitch.setOnCheckedChangeListener { _, isChecked ->
+            prefs.edit().putBoolean("autoStartEnabled", isChecked).apply()
         }
 
 
@@ -147,7 +165,8 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                registerReceiver(serverStateReceiver, IntentFilter("SERVER_STATE_UPDATE"),
+                registerReceiver(
+                    serverStateReceiver, IntentFilter("SERVER_STATE_UPDATE"),
                     RECEIVER_NOT_EXPORTED
                 )
             }
@@ -165,6 +184,7 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
         if (!isRunning) {
             val intent = Intent(this, WebServerService::class.java)
             intent.putExtra("PORT_VALUE", portValue)
+            intent.putExtra("AUTH_KEY", AuthKeyProvider.secretKey)
             intent.putExtra("SERVER_IP", localIp)
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -193,11 +213,13 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
                 webLink.visibility = View.VISIBLE
                 webLink.text = rvcwURL
                 invisibleButtons(openDialogPortBtn, openDialogAuthBtn)
+                autoStartSwitch.visibility = View.VISIBLE
             } else {
                 webLink.visibility = View.VISIBLE
                 webLink.setText(R.string.verify_local_network_connection)
                 txtDesc.setText(R.string.unable_to_find_local_address)
                 txtCloseDesc.setText(R.string.about_private_limitation)
+                autoStartSwitch.visibility = View.GONE
             }
         } else {
             startOrEndRemoteControlBtn.setText(R.string.start)
@@ -206,11 +228,14 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
                 webLink.visibility = View.GONE
                 visibleButtons(openDialogPortBtn, openDialogAuthBtn)
                 txtCloseDesc.setText(R.string.close_description)
+                autoStartSwitch.visibility = View.VISIBLE
             } else {
                 webLink.visibility = View.VISIBLE
                 webLink.setText(R.string.verify_local_network_connection)
                 txtDesc.setText(R.string.unable_to_find_local_address)
                 txtCloseDesc.setText(R.string.about_private_limitation)
+                autoStartSwitch.visibility = View.GONE
+
             }
         }
     }
@@ -236,6 +261,7 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
                 ) == PackageManager.PERMISSION_GRANTED -> {
                     // Permission has already been granted, no need to do anything
                 }
+
                 else -> {
                     // Request user permission
                     requestNotificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
@@ -293,22 +319,18 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
     }
 
     private fun loadAuthKey(): String {
-        val sharedPrefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
-        return sharedPrefs.getString("authKey", "3x@mplE_S3crEt_K3y!") ?: "3x@mplE_S3crEt_K3y!"
+        return prefs.getString("authKey", "3x@mplE_S3crEt_K3y!") ?: "3x@mplE_S3crEt_K3y!"
     }
 
     private fun loadPort(): Int {
-        val sharedPrefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
-        return sharedPrefs.getInt("port", 9090)
+        return prefs.getInt("port", 9090)
     }
 
     private fun saveServerState(isRunning: Boolean) {
-        val sharedPrefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
-        sharedPrefs.edit().putBoolean("isRunning", isRunning).apply()
+        return prefs.edit().putBoolean("isRunning", isRunning).apply()
     }
 
     private fun loadServerState(): Boolean {
-        val sharedPrefs = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
-        return sharedPrefs.getBoolean("isRunning", false)
+        return prefs.getBoolean("isRunning", false)
     }
 }

@@ -10,12 +10,14 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.riannreis.rvcw.AuthKeyProvider
 import com.riannreis.rvcw.R
 
 class WebServerService : Service() {
 
     private lateinit var webServer: WebServer
     private var portValue = 9090
+    private var authKey = AuthKeyProvider.secretKey
 
     override fun onCreate() {
         super.onCreate()
@@ -31,12 +33,12 @@ class WebServerService : Service() {
 
         val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
         webServer = WebServer(this, audioManager)
-        webServer.startServer(portValue)
 
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         portValue = intent?.getIntExtra("PORT_VALUE", 9090) ?: 9090
+        authKey = intent?.getStringExtra("AUTH_KEY") ?: AuthKeyProvider.secretKey
 
         val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Volume control active")
@@ -47,7 +49,7 @@ class WebServerService : Service() {
         startForeground(NOTIFICATION_ID, notification)
 
 
-        webServer.startServer(portValue)
+        webServer.startServer(portValue, authKey)
         return START_STICKY
     }
 

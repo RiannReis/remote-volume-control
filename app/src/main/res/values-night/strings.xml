@@ -18,4 +18,5 @@
     <string name="verify_local_network_connection">Verify that you are connected to your local network (Wifi) and restart the application.</string>
     <string name="about_private_limitation">This application limits itself to local network IP addresses (192.168.*.*, 10.*.*.*, or 172.16.0.0 to 172.31.255.255).</string>
     <string name="unable_to_find_local_address">Volume remote control is disabled. Unable to find a local network IP address.</string>
+    <string name="auto">Auto Mode </string>
 </resources>
