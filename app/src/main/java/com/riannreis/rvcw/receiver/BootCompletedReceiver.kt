@@ -21,6 +21,10 @@ class BootCompletedReceiver : BroadcastReceiver() {
                     prefs?.getString("authKey", "3x@mplE_S3crEt_K3y!") ?: "3x@mplE_S3crEt_K3y!"
                 AuthKeyProvider.secretKey = authKey
 
+                prefs?.edit()?.putBoolean("isRunning", true)?.apply()
+
+                Log.d("BootReceiver", "isRunning state saved as true")
+
                 val intent = Intent(p0, WebServerService::class.java)
                     .apply {
                         putExtra("PORT_VALUE", port)
