@@ -25,4 +25,7 @@
     <string name="volume_control_active">Controlador de volumen activado</string>
     <string name="server_running_in_the_background">Servidor ejecutándose en segundo plano.</string>
     <string name="received_port">Puerto recibido: %1$d</string>
+    <string name="grant">Conceder</string>
+    <string name="permission_desc_dialog">Esta aplicación requiere permisos de notificación para funcionar correctamente.</string>
+    <string name="permission_required">Se Requiere Permiso</string>
 </resources>

@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -60,6 +61,8 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
             if (isGranted) {
 
             } else {
+
+                showPermissionRationaleDialog()
 
             }
         }
@@ -250,7 +253,7 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
         }
     }
 
-    private fun showAutoModeInfoDialog(){
+    private fun showAutoModeInfoDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle(getString(R.string.auto))
         builder.setMessage(getString(R.string.auto_mode_description))
@@ -290,6 +293,32 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
         }
     }
 
+    private fun showPermissionRationaleDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.permission_required))
+            .setMessage(getString(R.string.permission_desc_dialog))
+            .setPositiveButton(getString(R.string.grant)) { _, _ ->
+
+                openAppNotificationSettings()
+
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
+    }
+
+    private fun openAppNotificationSettings() {
+        val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+            }
+        } else {
+            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = android.net.Uri.fromParts("package", packageName, null)
+            }
+        }
+        startActivity(intent)
+    }
+
     private fun getLocalIpAddress(): String? {
         try {
             val networkInterfaces = NetworkInterface.getNetworkInterfaces()
@@ -326,7 +355,8 @@ class MainActivity : AppCompatActivity(), InputPortDialogFragment.PortDialogList
 
     override fun onPortEntered(port: Int) {
         portValue = port
-        Toast.makeText(this, getString(R.string.received_port, portValue), Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.received_port, portValue), Toast.LENGTH_SHORT)
+            .show()
         rvcwURL = "http://$localIp:$portValue/?authKey=${AuthKeyProvider.secretKey}"
     }
 

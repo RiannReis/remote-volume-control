@@ -24,5 +24,8 @@
     <string name="invalid_port_value">Porta inválida! O valor deve estar entre 1024 e 65535.</string>
     <string name="volume_control_active">Controlador de Volume ativado</string>
     <string name="server_running_in_the_background">Servidor em execução em segundo plano.</string>
-    <string name="received_port">Received port: %1$d</string>
+    <string name="received_port">Porta recebida: %1$d</string>
+    <string name="grant">Conceder</string>
+    <string name="permission_desc_dialog">Este aplicativo requer permissões de notificação para funcionar corretamente.</string>
+    <string name="permission_required">Permissão Necessária</string>
 </resources>

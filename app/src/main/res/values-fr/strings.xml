@@ -25,4 +25,7 @@
     <string name="volume_control_active">Le contrôle du volume à distance est activé.</string>
     <string name="server_running_in_the_background">Serveur fonctionnant en arrière-plan.</string>
     <string name="received_port">Port reçu: %1$d</string>
+    <string name="grant">Accorder</string>
+    <string name="permission_desc_dialog">Cette application nécessite des autorisations de notification pour fonctionner correctement.</string>
+    <string name="permission_required">Autorisation Requise</string>
 </resources>

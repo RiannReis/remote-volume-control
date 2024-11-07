@@ -29,4 +29,7 @@
     <string name="volume_control_active">Volume control active</string>
     <string name="server_running_in_the_background">Server running in the background.</string>
     <string name="received_port">Received port: %1$d</string>
+    <string name="grant">Grant</string>
+    <string name="permission_desc_dialog">This app requires notification permissions to function properly.</string>
+    <string name="permission_required">Permission Required</string>
 </resources>
