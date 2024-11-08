@@ -150,14 +150,19 @@ class WebServer(
                                                 """
                                                 function asyncVolume(action) {
                                                     var xhr = new XMLHttpRequest();
-                                                    xhr.open("GET", "/" + action, true);
+                                                    xhr.open("GET", "/" + action + "?authKey=" + getAuthKey(), true);
                                                     xhr.send();
                                                     }
                                                     
                                                 function setVolume(volume) {
                                                     var xhr = new XMLHttpRequest();
-                                                    xhr.open("GET", "/volume/" + volume, true);
+                                                    xhr.open("GET", "/volume/" + volume + "?authKey=" + getAuthKey(), true);
                                                     xhr.send();
+                                                    }
+                                                    
+                                                function getAuthKey() {
+                                                    const urlParams = new URLSearchParams(window.location.search);
+                                                    return urlParams.get('authKey');
                                                     }
                                                 """.trimIndent()
                                             )
@@ -205,24 +210,53 @@ class WebServer(
                     }
 
                     get("/up") {
-                        setVolumeUp()
-                        call.respondText("Volume up")
+                        val reqAuthKey = call.parameters["authKey"]
+
+                        if (reqAuthKey == this@WebServer.authKey) {
+                            setVolumeUp()
+                            call.respondText("Volume up")
+                        } else {
+                            call.respondText(
+                                text = "Authentication failed",
+                                status = HttpStatusCode.Unauthorized
+                            )
+                        }
                     }
 
                     get("/down") {
-                        setVolumeDown()
-                        call.respondText("Volume down")
+                        val reqAuthKey = call.parameters["authKey"]
+
+                        if (reqAuthKey == this@WebServer.authKey) {
+                            setVolumeDown()
+                            call.respondText("Volume down")
+                        } else {
+                            call.respondText(
+                                text = "Authentication failed",
+                                status = HttpStatusCode.Unauthorized
+                            )
+                        }
                     }
 
                     get("/volume/{volume}") {
-                        val volume = call.parameters["volume"]?.toIntOrNull()
-                        if (volume != null) {
-                            setVolume(volume)
-                            call.respondText("Volume adjusted to $volume")
+                        val reqAuthKey = call.parameters["authKey"]
+
+                        if (reqAuthKey == this@WebServer.authKey) {
+
+                            val volume = call.parameters["volume"]?.toIntOrNull()
+
+                            if (volume != null) {
+                                setVolume(volume)
+                                call.respondText("Volume adjusted to $volume")
+                            } else {
+                                call.respondText(
+                                    "Invalid volume value",
+                                    status = HttpStatusCode.BadRequest
+                                )
+                            }
                         } else {
                             call.respondText(
-                                "Invalid volume value",
-                                status = HttpStatusCode.BadRequest
+                                text = "Authentication failed",
+                                status = HttpStatusCode.Unauthorized
                             )
                         }
                     }
