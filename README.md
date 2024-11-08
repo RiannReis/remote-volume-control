@@ -14,19 +14,19 @@ Then, a URL will be displayed (example: http://10.0.0.102:9090/?authKey=3x@mplE_
 
 > App - White mode - pt-BR language:
 
-<img src="https://github.com/user-attachments/assets/9827bee8-fb60-4e30-a310-814ae952a85a" alt="white mode: start screen" width="240" height="400">
-<img src="https://github.com/user-attachments/assets/6e7d341d-c05e-40a0-989f-53aeac50542c" alt="white mode: running screen" width="240" height="400">
-<img src="https://github.com/user-attachments/assets/0bc858b8-5204-4662-a937-f0fc18f1e936" alt="white mode: port dialog" width="240" height="400">
-<img src="https://github.com/user-attachments/assets/819ef74d-d8fc-4dcb-ba01-8a337f2ba060" alt="white mode: auth dialog" width="240" height="400">
+<img src="https://github.com/user-attachments/assets/9827bee8-fb60-4e30-a310-814ae952a85a" alt="white mode: start screen" width="210" height="370">
+<img src="https://github.com/user-attachments/assets/6e7d341d-c05e-40a0-989f-53aeac50542c" alt="white mode: running screen" width="210" height="370">
+<img src="https://github.com/user-attachments/assets/0bc858b8-5204-4662-a937-f0fc18f1e936" alt="white mode: port dialog" width="210" height="370">
+<img src="https://github.com/user-attachments/assets/819ef74d-d8fc-4dcb-ba01-8a337f2ba060" alt="white mode: auth dialog" width="210" height="370">
 
 ---
 
 > App - Dark mode - en language:
 
-<img src="https://github.com/user-attachments/assets/f5d704d5-bb36-4cf5-bbb4-e3dcfb7f5e52" alt="dark mode: start screen" width="240" height="400">
-<img src="https://github.com/user-attachments/assets/d21102b8-985d-4a0f-864f-ed8339e128e5" alt="dark mode: auto mode dialog" width="240" height="400">
-<img src="https://github.com/user-attachments/assets/6120e4d2-13ab-4c17-90aa-8f9950ce7cc0" alt="dark mode: start screen auto mode on" width="240" height="400">
-<img src="https://github.com/user-attachments/assets/1a18cdc8-edcd-4fec-82ce-10f77d3d745f" alt="dark mode: running screen (custom)" width="240" height="400">
+<img src="https://github.com/user-attachments/assets/f5d704d5-bb36-4cf5-bbb4-e3dcfb7f5e52" alt="dark mode: start screen" width="210" height="370">
+<img src="https://github.com/user-attachments/assets/d21102b8-985d-4a0f-864f-ed8339e128e5" alt="dark mode: auto mode dialog" width="210" height="370">
+<img src="https://github.com/user-attachments/assets/6120e4d2-13ab-4c17-90aa-8f9950ce7cc0" alt="dark mode: start screen auto mode on" width="210" height="370">
+<img src="https://github.com/user-attachments/assets/1a18cdc8-edcd-4fec-82ce-10f77d3d745f" alt="dark mode: running screen (custom)" width="210" height="370">
 
 ---
 
