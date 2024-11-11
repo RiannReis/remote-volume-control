@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
+        android:gravity="center"
         android:text="@string/input_port_txt"
         android:textSize="16sp" />
 
@@ -23,13 +24,15 @@
         android:importantForAutofill="no"
         android:inputType="number"
         android:maxLength="5"
+        android:padding="12dp"
         android:textSize="20sp" />
 
     <TextView
         android:id="@+id/default_port_desc"
-        android:layout_marginTop="12dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
         android:text="@string/default_port_desc" />
 
     <LinearLayout
@@ -39,16 +42,16 @@
 
         <Button
             android:id="@+id/btn_cancel"
-            android:layout_margin="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="16dp"
             android:text="@android:string/cancel" />
 
         <Button
             android:id="@+id/btn_ok"
-            android:layout_margin="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="16dp"
             android:text="@android:string/ok" />
     </LinearLayout>
 
