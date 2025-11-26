@@ -7,5 +7,5 @@ Cette application ne collecte tout simplement aucune donnée.
 Português:
 Este aplicativo não coleta nenhuma informação de nenhum tipo.
 
-Portugués:
+Español:
 Esta aplicación no recopila ninguna información de ningún tipo.
