@@ -13,5 +13,5 @@ The assessment included:
 
 Reports:
 
-- English Version: reports/rvcw_analysis_report_study_case.pdf
-- Portuguese (Brazil) Version: reports/rvcw_analysis_report_study_case-pt-br.pdf
+- English Version: [reports/rvcw_analysis_report_study_case.pdf](https://github.com/RiannReis/remote-volume-control/blob/main/reports/rvcw_analysis_report_study_case.pdf)
+- Portuguese (Brazil) Version: [reports/rvcw_analysis_report_study_case-pt-br.pdf](https://github.com/RiannReis/remote-volume-control/blob/main/reports/rvcw_analysis_report_study_case-pt-br.pdf)
